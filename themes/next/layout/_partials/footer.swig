@@ -20,3 +20,10 @@
   </a>
 </div>
 {% endif %}
+
+{% if theme.cnzz_siteid %}
+   <span style="margin-left:8px;">
+    <div class="powered-by"></div>
+   <script src="http://s6.cnzz.com/stat.php?id={{ theme.cnzz_siteid }}&web_id={{ theme.cnzz_siteid }}" type="text/javascript"></script>
+   </span>
+{% endif %}

@@ -360,7 +360,7 @@ changyan:
 #yandex_site_verification:
 
 # CNZZ count
-#cnzz_siteid:
+cnzz_siteid: 1262592725
 
 # Application Insights
 # See https://azure.microsoft.com/en-us/services/application-insights/
@@ -420,19 +420,21 @@ leancloud_visitors:
 
 # Show PV/UV of the website/page with busuanzi.
 # Get more information on http://ibruce.info/2015/04/04/busuanzi/
+# http://theme-next.iissnan.com/third-party-services.html
 busuanzi_count:
   # count values only if the other configs are false
-  enable: false
+  # site_uv site_pv page_pv 设置为false，只统计，不在页面显示
+  enable: true
   # custom uv span for the whole site
-  site_uv: true
+  site_uv: false
   site_uv_header: <i class="fa fa-user"></i>
   site_uv_footer:
   # custom pv span for the whole site
-  site_pv: true
+  site_pv: false
   site_pv_header: <i class="fa fa-eye"></i>
   site_pv_footer:
   # custom pv span for one page only
-  page_pv: true
+  page_pv: false
   page_pv_header: <i class="fa fa-file-o"></i>
   page_pv_footer:
 
