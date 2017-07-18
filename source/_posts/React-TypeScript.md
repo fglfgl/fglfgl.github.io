@@ -46,4 +46,45 @@ $ npm install typescript --save-dev
 打开配置页面`WebStorm>Preferences`快捷键`⌘,`，按照如下配置，步骤2为`node`环境目录
 
  {% qnimg React/WebStorm-tpyeScript-Setting.png %}
+---
+### 参考文献
+- [app-root-path](https://www.npmjs.com/package/app-root-path)
+- [autoprefixer]()
+
+> Autoprefixer是一个后处理程序，你可以同Sass，Stylus或LESS等预处理器共通使用。它适用于普通的CSS，而你无需关心要为哪些浏览器加前缀，只需全新关注于实现，并使用W3C最新的规范。
+
+3. [case-sensitive-paths-webpack-plugin]()
+4. [chalk]()
+5. [cli-highlight]()
+6. [css-loader]()
+7. [dotenv]()
+8. [extract-text-webpack-plugin]()
+9. [file-loader]()
+10. [fs-extra]()
+11. [fsevents]()
+12. [html-webpack-plugin]()
+13. [jest]()
+14. [object-assign]()
+15. [postcss-flexbugs-fixes]()
+16. [postcss-loader]()
+17. [promise]()
+18. [react-dev-utils]()
+19. [react-error-overlay]()
+20. [source-map-loader]()
+21. [style-loader]()
+22. [sw-precache-webpack-plugin]()
+23. [ts-loader]()
+24. [tslint]()
+25. [tslint-loader]()
+26. [tslint-react]()
+27. [typescript]()
+28. [url-loader]()
+29. [webpack](https://doc.webpack-china.org)
+30. [webpack-dev-server](https://segmentfault.com/a/1190000006670084)
+31. [webpack-manifest-plugin]()
+32. [whatwg-fetch]()
+
+
+
+
 
