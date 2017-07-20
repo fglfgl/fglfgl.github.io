@@ -1,4 +1,4 @@
-title: React项目（一）利用脚手架create-react-app从零搭建前端项目
+title: React项目（一）脚手架create-react-app从零搭建前端项目
 author: BIGPIG
 tags:
   - React
@@ -33,7 +33,7 @@ $ cd scaffold-demo
 $ npm start
 ```
 进到`scaffold-demo`, 执行脚本`npm run build`会在根目录生成`build`文件夹，里面的文件为网页的静态文件，最终项目结构如下：
- {% qnimg React/create-react-app-scaffold-demo.png title:项目目录 'class:class1 class2' extend:?imageView2/2/w/600 %}
+ {% qnimg React/create-react-app-scaffold-demo.png title:项目目录 'class:class1 class2' extend:?imageMogr2/2/w/600 %}
 
 ### 部署网站到`nginx`
 - 本地安装`nginx`
@@ -45,8 +45,9 @@ $ brew install nginx
 ```
 
 
-- 把生成的静态文件发布到`nginx`，同时配置`nginx`。在`server`下新增配置文件`scaffold_demo.conf`，内容如下：
+- 把生成的静态文件发布到`nginx`，同时配置`nginx`。在`server`下新增配置文件`scaffold_demo.conf`
 
+##### scaffold_demo.conf
 ```
 server {
     listen 9000;
@@ -82,7 +83,7 @@ $ nginx -s reload
 # 停止nginx
 $ nginx -s stop
 ```
-- 到这里项目已经简单部署到本地[http://localhost:9000](http://localhost:9000)，实际项目部署也是更改服务器的`nginx`的配置，实现域名访问。
+- 到这里项目已经简单部署到本地<http://localhost:9000>，实际项目部署也是更改服务器的`nginx`的配置，实现域名访问。
 
 ### 总结
 以上步骤完成了项目结构搭建，项目本地部署，简单的跑完的整个流程。接下来会分析脚手架里依赖到的插件，了解其作用以及如何使用它们。等一切都弄清楚了就能顺利的开发，以及开发完的项目该如何配置，打包发布到线上。
