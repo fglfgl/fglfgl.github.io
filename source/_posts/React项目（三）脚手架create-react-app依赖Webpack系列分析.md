@@ -66,15 +66,9 @@ output: {
 ```
 
 #### 加载器 [loader](https://doc.webpack-china.org/concepts/loaders)
-
-#### 插件 [plugins](https://doc.webpack-china.org/configuration/output)
-
-
-
-### PostCSS平台
-PostCSS提供了多样化的功能插件，通常需要和构建工具使用，我们项目使用的构建工具为[`webpack`][]所以只讲[`webpack`][]如何配置使用PostCSS提供的插件。
- 
-- [`postcss-loader`][]结合[`webpack`][]做插件处理，这里结合[`autoprefixer`][]（CSS浏览器兼容补全）、[`style-loader`][]（将CSS转换为注入style标签的JS模块）、[`css-loader`][]（自动解析CSS路径）一起使用，实现构建时自动import JS用到的CSS到html中，`webpack.config.dev.js`配置如下:
+loader 用于对模块的源代码进行转换，webpack 实际只能处理`JS`文件，loader 是 webpack 提供将其他语言转成`JS`的的重要功能，不同语言会有不同的 loader，如之后会用到的 `TypeScript 的 ts-loader`, `CSS 的 css-loader`、`file-loader...`等。 
+loader 的配置方式有3种，推荐在`webpack config`内配置，另外2种可以看文档。`module.rules` 允许你在 webpack 配置中指定多个 loader。
+> webpack.config.dev.js
 
 ```
 {
@@ -109,10 +103,65 @@ PostCSS提供了多样化的功能插件，通常需要和构建工具使用，�
 }
 ```
 
-- [`autoprefixer`][]：css浏览器兼容补全
+loader 实际就是 node module，方法`callback`会返回当前 loader 处理的结果给下一个 loader，所以loader的处理是有顺序的，从左到右从上到下，上面的`CSS`文件内容依次经过`style-loader`、`css-loader`、`postcss-loader...`，前者的输出作为后者的输入，最终处理之后返回。
 
-### 参考
+```
+module.exports = function(source, other) {
+  // 具体代码实现
+  // return source; 返回单一处理结果
+  this.callback(null, source, other); // 返回当前处理结果给下一个loader
+};
+```
+如果你打算自定义一个 loader 可以参考这篇文章 [如何开发一个webpack-loader](http://www.alloyteam.com/2016/01/webpack-loader-1)
+
+#### 插件 [plugins](https://doc.webpack-china.org/configuration/output)
+到这里，你可能跟我一样有疑惑，有`loader`了为何还要`plungin`？两个东西有什么区别？
+
+- `loader`：webpack本身只能打包 [CommonJS](http://zhaoda.net/webpack-handbook/commonjs.html) 规范的`JS`文件，对于其他资源例如 CSS、图片、或者其他的语法集，比如 JSX 是没有办法加载的。 这就需要对应的loader将资源转化，加载进来。从字面意思也能看出，loader是用于加载的，它作用于一个个文件上。
+- `plugin`：直接作用于 webpack，扩展了它的功能。当然loader也时变相的扩展了 webpack ，但是它只专注于转化文件`transform`这一个领域。而plugin的功能更加的丰富，而不仅局限于资源的加载。
+
+> webpack.config.dev.js
+
+```
+# module.plugins 下可以配置多个插件
+const xxxPlugin = require('xxxplugin');
+const yyyPlugin = require('yyyplugin');
+
+module.exports = {
+    plugins:[
+        // plugins 实例
+        new xxxPlugin(),
+        new yyyPlugin()
+    ]
+}
+```
+### [webpack-dev-server][]
+`webpack-dev-server` 就是一个小型的静态文件服务器。使用它，可以为`webpack`打包生成的资源文件提供`Web`服务。在开发过程中，变动文件会触发自动编译同时刷新网页，`WDS`提供了**两种**用于刷新页面的模式。
+#### inline模式
+启动`inline`模式的`cmd`命令
+
+```
+$ webpack-dev-server --inline
+```
+启动后打开<http://localhost:8080/index.html>，即可访问本地网站。
+
+#### iframe模式
+启动`iframe`模式的`cmd`命令
+
+```
+# 不需要加其他指令，默认就是iframe
+$ webpack-dev-server
+```
+启动后打开<http://localhost:8080/webpack-dev-server/index.html>，即可访问本地网站。
+
+
+## 总结
+通过对 `webpack` 四个核心概念的了解，可以知道如何简单实用。
+
+## 参考
 - [使用PostCSS进行CSS处理](https://www.ibm.com/developerworks/cn/web/1604-postcss-css/index.html)
+- [如何开发一个webpack-loader](http://www.alloyteam.com/2016/01/webpack-loader-1)
+- [使用Loader](https://webpack.toobug.net/zh-cn/chapter4/using-loaders.html)
 
 [`webpack`]:https://doc.webpack-china.org
 [webpack]:https://doc.webpack-china.org
