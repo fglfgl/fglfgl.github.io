@@ -135,12 +135,34 @@ module.exports = {
     ]
 }
 ```
+我们可以这样自定义一个插件：
+> MyPlugin.js
+
+```
+function MyPlugin(options) {
+  // 配置
+}
+
+MyPlugin.prototype.apply = function(compiler) {
+  // ...
+  compiler.plugin('compilation', function(compilation) {
+    compilation.plugin('my-plugin-xxxx', function(myPluginXxx, callback) {
+      // 代码实现
+      callback(null, htmlPluginData);
+    });
+  });
+};
+
+module.exports = MyPlugin;
+```
+
 ### [webpack-dev-server][]
 `webpack-dev-server` 就是一个小型的静态文件服务器。使用它，可以为`webpack`打包生成的资源文件提供`Web`服务。在开发过程中，变动文件会触发自动编译同时刷新网页，`WDS`提供了**两种**用于刷新页面的模式。
 #### inline模式
 启动`inline`模式的`cmd`命令
 
 ```
+# 默认 --host localhost --port 8080
 $ webpack-dev-server --inline
 ```
 启动后打开<http://localhost:8080/index.html>，即可访问本地网站。
@@ -154,9 +176,58 @@ $ webpack-dev-server
 ```
 启动后打开<http://localhost:8080/webpack-dev-server/index.html>，即可访问本地网站。
 
+### [webpack-manifest-plugin][]
+是 [webpack][] 的优化，对编译生成的静态文件加`md5`还是`hash`重命名输出，并记录成清单，用作缓存。
+> webpack.config.prod.js
+ 
+```
+const ManifestPlugin = require('webpack-manifest-plugin');
 
-## 总结
-通过对 `webpack` 四个核心概念的了解，可以知道如何简单实用。
+module.exports = {
+    // ...
+    plugins: [
+      new ManifestPlugin({
+      fileName: 'asset-manifest.json', // 生成清单文件文件名
+      // 还有其他配置可以看下文档
+      })
+    ]
+};
+```
+
+### [case-sensitive-paths-webpack-plugin][]
+强制文件路径大小写敏感，`mac OS`大小写不敏感会导致其他平台引用文件路径出错。
+> webpack.config.dev.js
+
+```
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+
+module.exports = {
+    // ...
+    plugins: [
+        // debug模式下可以看到更多的信息
+        new CaseSensitivePathsPlugin({debug: true})),
+    ]
+}
+```
+### [extract-text-webpack-plugin][]
+将`CSS`从`JS`文件中分离开来，成为单独的`.CSS`文件，该插件通常会与[`PostCSS`][]系列的`loader`，如[`css-loader`][]、[`postcss-loader`][]一起使用。
+
+### [html-webpack-plugin][]
+就是`HTML`生成插件，将 webpack中`entry`配置的相关入口`thunk`和`extract-text-webpack-plugin`抽取的`CSS`文件插入到该插件提供的`template`或者`templateContent`配置项指定的内容基础上生成一个`html`文件，具体插入方式是将样式`link`插入到`head`元素中，`script`插入到`head`或者`body`中。
+> webpack.config.prod.js
+
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+    // ...
+    plugins: [
+        new HtmlWebpackPlugin(), // 不配置任何参数
+        new HtmlWebpackPlugin
+    ]
+}
+```
+
 
 ## 参考
 - [使用PostCSS进行CSS处理](https://www.ibm.com/developerworks/cn/web/1604-postcss-css/index.html)
