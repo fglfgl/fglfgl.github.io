@@ -1,8 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2F2017%2F06%2F28%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+    <title><![CDATA[React项目（五）脚手架create-react-app依赖PostCSS系列分析]]></title>
+    <url>%2F2017%2F07%2F19%2FReact%E9%A1%B9%E7%9B%AE%EF%BC%88%E4%BA%94%EF%BC%89%E8%84%9A%E6%89%8B%E6%9E%B6create-react-app%E4%BE%9D%E8%B5%96PostCSS%E7%B3%BB%E5%88%97%E5%88%86%E6%9E%90%2F</url>
+    <content type="text"><![CDATA[PostCSS平台PostCSS提供了多样化的功能插件，通常需要和构建工具使用，我们项目使用的构建工具为[webpack][]所以只讲[webpack][]如何配置使用PostCSS提供的插件。 [postcss-loader][]结合[webpack][]做插件处理，这里结合[autoprefixer][]（CSS浏览器兼容补全）、[style-loader][]（将CSS转换为注入style标签的JS模块）、[css-loader][]（自动解析CSS路径）一起使用，实现构建时自动import JS用到的CSS到html中，webpack.config.dev.js配置如下: [autoprefixer][]：css浏览器兼容补全]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>PostCSS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React项目（四）脚手架create-react-app依赖TypeScript系列分析]]></title>
+    <url>%2F2017%2F07%2F19%2FReact%E9%A1%B9%E7%9B%AE%EF%BC%88%E5%9B%9B%EF%BC%89%E8%84%9A%E6%89%8B%E6%9E%B6create-react-app%E4%BE%9D%E8%B5%96TypeScript%E7%B3%BB%E5%88%97%E5%88%86%E6%9E%90%2F</url>
+    <content type="text"></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>TypeScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React项目（三）脚手架create-react-app依赖Webpack系列分析]]></title>
+    <url>%2F2017%2F07%2F19%2FReact%E9%A1%B9%E7%9B%AE%EF%BC%88%E4%B8%89%EF%BC%89%E8%84%9A%E6%89%8B%E6%9E%B6create-react-app%E4%BE%9D%E8%B5%96Webpack%E7%B3%BB%E5%88%97%E5%88%86%E6%9E%90%2F</url>
+    <content type="text"><![CDATA[说明所有的分析都是加上个人理解，快速弄懂每个插件的作用，以及在项目中如何配置简单使用。更加深入具体的东西，需要每个插件慢慢去吃透，不说源码以及原理，至少理解到细节的功能，知道有这么回事，开发中遇到问题才有初步的解决思路。每个插件已经关联了链接，都有具体对应的文件可以看。 依赖插件简介 webpack：是JavaScript 应用程序的模块打包器(module bundler)。通过递归所有模块，打包成bundle，由浏览器加载。 webpack-dev-server：用于快速开发应用程序，通过配置，改变程序行为，如host、文件变动监控等。 webpack-manifest-plugin：是 webpack 的优化，对编译生成的静态文件加md5还是hash重命名输出，并记录成清单，用作缓存。 case-sensitive-paths-webpack-plugin：强制文件路径大小写敏感，mac OS大小写不敏感会导致其他平台引用文件路径出错。 extract-text-webpack-plugin：将CSS从JS文件中分离开来，成为单独的.CSS文件。 html-webpack-plugin：自动生成html文件。 sw-precache-webpack-plugin：预缓存，配合webpack-manifest-plugin使用可以缓存加载到文件、甚至网站用到的所有静态文件CSS、JS、Image...等。 依赖分析webpackwebpack 用于编译 JavaScript 模块，项目config下包含webpack以及paths.js的都是 webpack 的配置文件。我们先了解其提供的四个核心概念：入口(entry)、输出(output)、加载器(loader)、插件(plugins)的配置。config/paths.json 文件是webpack配置要用到的路径，下面不少地方会用到paths.xxxx。 入口 entrywebpack 可以用多种方式定义入口的属性，应用程序的入口paths.appIndexJs放在最后，程序出错才不会对WebpackDevServer造成压力，同时仍然能触发文件变动刷新。 webpack.config.dev.js 123456entry: [ require.resolve(&apos;react-dev-utils/webpackHotDevClient&apos;), require.resolve(&apos;react-error-overlay&apos;), require.resolve(&apos;./polyfills&apos;), paths.appIndexJs,] webpack.config.prod.js 1234entry: [ require.resolve(&apos;./polyfills&apos;), paths.appIndexJs,] 输出 output上面我们提到程序的入口，以及其他插件的入口，入口可以存在多个，但是最终编译的文件只能有一个输出配置output。 webpack.config.dev.js 123456789101112131415output: &#123; // 输出目录 path: paths.appBuild, // 告诉 webpack 在 bundle 保留模块的注释，生产环境应该关闭。 pathinfo: true, // 每个 bundle 输出的路径和名称 filename: &apos;static/js/bundle.js&apos;, // 未被列在entry中，需要打包出来的文件会用占位符name先代替，之后自动分配ID名称 chunkFilename: &apos;static/js/[name].chunk.js&apos;, // 网站根目录，这里是 &quot;/&quot; publicPath: publicPath, // 还不知道什么鬼，再说 devtoolModuleFilenameTemplate: info =&gt; path.resolve(info.absoluteResourcePath), &#125;, 加载器 loaderloader 用于对模块的源代码进行转换，webpack 实际只能处理JS文件，loader 是 webpack 提供将其他语言转成JS的的重要功能，不同语言会有不同的 loader，如之后会用到的 TypeScript 的 ts-loader, CSS 的 css-loader、file-loader...等。loader 的配置方式有3种，推荐在webpack config内配置，另外2种可以看文档。module.rules 允许你在 webpack 配置中指定多个 loader。 webpack.config.dev.js 123456789101112131415161718192021222324252627282930&#123; test: /\.css$/, use: [ require.resolve(&apos;style-loader&apos;), &#123; loader: require.resolve(&apos;css-loader&apos;), options: &#123; importLoaders: 1, &#125;, &#125;, &#123; loader: require.resolve(&apos;postcss-loader&apos;), options: &#123; ident: &apos;postcss&apos;, // https://webpack.js.org/guides/migrating/#complex-options plugins: () =&gt; [ require(&apos;postcss-flexbugs-fixes&apos;), autoprefixer(&#123; browsers: [ &apos;&gt;1%&apos;, &apos;last 4 versions&apos;, &apos;Firefox ESR&apos;, &apos;not ie &lt; 9&apos;, // React doesn&apos;t support IE8 anyway ], flexbox: &apos;no-2009&apos;, &#125;), ], &#125;, &#125;, ],&#125; loader 实际就是 node module，方法callback会返回当前 loader 处理的结果给下一个 loader，所以loader的处理是有顺序的，从左到右从上到下，上面的CSS文件内容依次经过style-loader、css-loader、postcss-loader...，前者的输出作为后者的输入，最终处理之后返回。 12345module.exports = function(source, other) &#123; // 具体代码实现 // return source; 返回单一处理结果 this.callback(null, source, other); // 返回当前处理结果给下一个loader&#125;; 如果你打算自定义一个 loader 可以参考这篇文章 如何开发一个webpack-loader 插件 plugins到这里，你可能跟我一样有疑惑，有loader了为何还要plungin？两个东西有什么区别？ loader：webpack本身只能打包 CommonJS 规范的JS文件，对于其他资源例如 CSS、图片、或者其他的语法集，比如 JSX 是没有办法加载的。 这就需要对应的loader将资源转化，加载进来。从字面意思也能看出，loader是用于加载的，它作用于一个个文件上。 plugin：直接作用于 webpack，扩展了它的功能。当然loader也时变相的扩展了 webpack ，但是它只专注于转化文件transform这一个领域。而plugin的功能更加的丰富，而不仅局限于资源的加载。 webpack.config.dev.js 1234567891011# module.plugins 下可以配置多个插件const xxxPlugin = require(&apos;xxxplugin&apos;);const yyyPlugin = require(&apos;yyyplugin&apos;);module.exports = &#123; plugins:[ // plugins 实例 new xxxPlugin(), new yyyPlugin() ]&#125; 我们可以这样自定义一个插件： MyPlugin.js 123456789101112131415function MyPlugin(options) &#123; // 配置&#125;MyPlugin.prototype.apply = function(compiler) &#123; // ... compiler.plugin(&apos;compilation&apos;, function(compilation) &#123; compilation.plugin(&apos;my-plugin-xxxx&apos;, function(myPluginXxx, callback) &#123; // 代码实现 callback(null, htmlPluginData); &#125;); &#125;);&#125;;module.exports = MyPlugin; webpack-dev-serverwebpack-dev-server 就是一个小型的静态文件服务器。使用它，可以为webpack打包生成的资源文件提供Web服务。在开发过程中，变动文件会触发自动编译同时刷新网页，WDS提供了两种用于刷新页面的模式。 inline模式启动inline模式的cmd命令 12# 默认 --host localhost --port 8080$ webpack-dev-server --inline 启动后打开http://localhost:8080/index.html，即可访问本地网站。 iframe模式启动iframe模式的cmd命令 12# 不需要加其他指令，默认就是iframe$ webpack-dev-server 启动后打开http://localhost:8080/webpack-dev-server/index.html，即可访问本地网站。 webpack-manifest-plugin是 webpack 的优化，对编译生成的静态文件加md5还是hash重命名输出，并记录成清单，用作缓存。 webpack.config.prod.js 1234567891011const ManifestPlugin = require(&apos;webpack-manifest-plugin&apos;);module.exports = &#123; // ... plugins: [ new ManifestPlugin(&#123; fileName: &apos;asset-manifest.json&apos;, // 生成清单文件文件名 // 还有其他配置可以看下文档 &#125;) ]&#125;; case-sensitive-paths-webpack-plugin强制文件路径大小写敏感，mac OS大小写不敏感会导致其他平台引用文件路径出错。 webpack.config.dev.js 123456789const CaseSensitivePathsPlugin = require(&apos;case-sensitive-paths-webpack-plugin&apos;);module.exports = &#123; // ... plugins: [ // debug模式下可以看到更多的信息 new CaseSensitivePathsPlugin(&#123;debug: true&#125;)), ]&#125; extract-text-webpack-plugin将CSS从JS文件中分离开来，成为单独的.CSS文件，该插件通常会与PostCSS系列的loader，如css-loader、postcss-loader一起使用。 html-webpack-plugin就是HTML生成插件，将 webpack中entry配置的相关入口thunk和extract-text-webpack-plugin抽取的CSS文件插入到该插件提供的template或者templateContent配置项指定的内容基础上生成一个html文件，具体插入方式是将样式link插入到head元素中，script插入到head或者body中。 webpack.config.prod.js 123456789const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;);module.exports = &#123; // ... plugins: [ new HtmlWebpackPlugin(), // 不配置任何参数 new HtmlWebpackPlugin ]&#125; 参考 使用PostCSS进行CSS处理 如何开发一个webpack-loader 使用Loader]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>Webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React项目（二）脚手架create-react-app依赖分析]]></title>
+    <url>%2F2017%2F07%2F18%2FReact%E9%A1%B9%E7%9B%AE%EF%BC%88%E4%BA%8C%EF%BC%89%E8%84%9A%E6%89%8B%E6%9E%B6create-react-app%E4%BE%9D%E8%B5%96%E5%88%86%E6%9E%90%2F</url>
+    <content type="text"><![CDATA[使用WebStome下载安装下载安装WebStome并激活，激活方式参考JetBrains激活，完成之后open项目scaffold-demo，下一步配置。 配置WebStome自动编译打开配置页面WebStorm-&gt;Preferences快捷键⌘,，按照如下配置，步骤2为node环境目录 config分析package.json打开package.json你可以看到几十个依赖（见下图），这些依赖是开发的关键，这也是为什么出现脚手架的原因。毕竟从0开始搭框架不清楚要用什么东西，分分钟搞到你放弃。当然，如果你有一定前端基础，一步步摸索，更加深刻的去理解搭建过程中用到的东西，明白其中的原理也是不错的选择。 我把package.json中依赖的插件分为几个部分 webpack TypeScript PostCSS 在接下的的学习中分析每个大块以及块内依赖的作用以及关联]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>create-react-app</tag>
+        <tag>react-scripts-ts</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React项目（一）脚手架create-react-app从零搭建前端项目]]></title>
+    <url>%2F2017%2F07%2F18%2FReact%E9%A1%B9%E7%9B%AE%EF%BC%88%E4%B8%80%EF%BC%89%E8%84%9A%E6%89%8B%E6%9E%B6create-react-app%E4%BB%8E%E9%9B%B6%E6%90%AD%E5%BB%BA%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%2F</url>
+    <content type="text"><![CDATA[脚手架 脚手架的作用在于快速搭建项目框架，是前人从0整理的前端项目需要的依赖，减少必要的重复工作。 如果最开始自己搭建，会晕头转向，因为用到的依赖实在太多，不利于新手学习。 目前流行的脚手架有，react-boilerplate、react-redux-starter-kit、create-react-app ，FaceBook的create-react-app可谓后来居上。我没有去比较各自的异同，Facebook更符合我学习的目的，毕竟大厂出的，而且start数已达30K。 下面先基于create-react-app的脚手架搭建项目跑起来，之后再分析脚手架用到的依赖，以便今后开发使用。 安装脚手架create-react-app create-react-app 12# 安装全局依赖$ npm install create-react-app -g 依赖脚手架创建TypeScript项目 create-react-app-typescript 123456# scaffold-demo 为项目名称$ create-react-app scaffold-demo --scripts-version=react-scripts-ts# 完成后进到项目根目录$ cd scaffold-demo# 启动项目 打开 http://localhost:3000/$ npm start 进到scaffold-demo, 执行脚本npm run build会在根目录生成build文件夹，里面的文件为网页的静态文件，最终项目结构如下： 部署网站到nginx 本地安装nginx 安装完成后，nginx配置在目录/usr/local/etc/nginx下，文件nginx.conf代码最后会加载根目录server/*所有配置文件。 1$ brew install nginx 把生成的静态文件发布到nginx，同时配置nginx。在server下新增配置文件scaffold_demo.conf scaffold_demo.conf123456789101112131415161718192021server &#123; listen 9000; server_name localhost; location / &#123; # 静态夹文件路径 root xxx/scaffold-demo/build; # 网页入口 index index.htm index.html; &#125; # nginx 处理静态文件 location /static/ &#123; # 静态文件根目录 root xxxx/scaffold-demo/build; # 开启gzip gzip on; gzip_min_length 1000; gzip_types text/plain application/javascript application/x-javascript text/javascript text/css application/xml; expires 30d; &#125;&#125; 配置完成，检查、启动、停止 12345678# 测试配置成不成功，不成功会报错$ nginx -t # 启动nginx$ nginx# 若修改配置，重新加载配置$ nginx -s reload # 停止nginx$ nginx -s stop 到这里项目已经简单部署到本地http://localhost:9000，实际项目部署也是更改服务器的nginx的配置，实现域名访问。 总结以上步骤完成了项目结构搭建，项目本地部署，简单的跑完的整个流程。接下来会分析脚手架里依赖到的插件，了解其作用以及如何使用它们。等一切都弄清楚了就能顺利的开发，以及开发完的项目该如何配置，打包发布到线上。]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>TypeScript</tag>
+        <tag>create-react-app</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React+TypeScript]]></title>
+    <url>%2F2017%2F07%2F07%2FReact-TypeScript%2F</url>
+    <content type="text"><![CDATA[新建项目新建工程文件夹1$ mkdir TypeScriptDemo &amp;&amp; cd TypeScriptDemo 初始化工程除了package name 其他都默认敲回车即可 1234$ npm initpackage name: (TypeScriptDemo) TypeScriptDemo...Is this ok? (yes) yes 组织目录结构src目录存放工程代码，dist最终由webpack生成1234TypeScriptDemo/├─ dist/└─ src/ └─ components/ 安装依赖 安装全局webpack 1npm install -g webpack 安装TypeScript 1$ npm install typescript --save-dev 配置WebStorm自动编译ts文件打开配置页面WebStorm&gt;Preferences快捷键⌘,，按照如下配置，步骤2为node环境目录 参考文献 app-root-path autoprefixer Autoprefixer是一个后处理程序，你可以同Sass，Stylus或LESS等预处理器共通使用。它适用于普通的CSS，而你无需关心要为哪些浏览器加前缀，只需全新关注于实现，并使用W3C最新的规范。 case-sensitive-paths-webpack-plugin chalk cli-highlight css-loader dotenv extract-text-webpack-plugin file-loader fs-extra fsevents html-webpack-plugin jest object-assign postcss-flexbugs-fixes postcss-loader promise react-dev-utils react-error-overlay source-map-loader style-loader sw-precache-webpack-plugin ts-loader tslint tslint-loader tslint-react typescript url-loader webpack webpack-dev-server webpack-manifest-plugin whatwg-fetch]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>React</tag>
+        <tag>TypeScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hexo命令]]></title>
+    <url>%2F2017%2F07%2F01%2FHexo%E5%91%BD%E4%BB%A4%2F</url>
+    <content type="text"><![CDATA[Hexo基本命令 清除已生成网页 1$ hexo clean 构建生成静态网页 123$ hexo generate # 或$ hexo g 启动服务 123$ hexo server# 或$ hexo s 部署到服务器 123$ hexo deploy# 或$ hexo d Hexo 插件命令 七牛：官网、插件地址 显示插件版本，作者及Github地址信息等 123$ hexo qiniu info# 或$ hexo qiniu i 同步静态资源到七牛空间 123$ hexo qiniu sync# 或$ hexo qiniu s 同步上传那些本地与七牛空间有差异的文件 123$ hexo qiniu sync# 或$ hexo qiniu s]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
   </entry>
 </search>
